@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مكتبة Earth التعليميّة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#8a2be2;
+  --accent:#d8b4ff;
+  --bg-gradient:linear-gradient(135deg,#2e004f,#5a00a0,#8a2be2);
+}
+body {
+  margin:0;
+  font-family:"Cairo", sans-serif;
+  direction:rtl;
+  background:var(--bg-gradient);
+  color:#fff;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+header {
+  position:fixed;
+  top:0; left:0; right:0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 30px;
+  backdrop-filter:blur(10px);
+  background:rgba(0,0,0,0.3);
+  z-index:100;
+}
+.brand {font-size:22px; font-weight:700; color:#fff;}
+.nav-link {
+  cursor:pointer;
+  padding:8px 16px;
+  background:rgba(255,255,255,0.1);
+  border-radius:12px;
+  margin-left:10px;
+  color:#fff;
+  transition:0.3s;
+}
+.nav-link:hover {background:var(--accent); color:#000;}
+#profileArea {
+  position:fixed; left:20px; top:80px;
+  width:220px; text-align:center;
+}
+#profileArea img {width:90px;height:90px;border-radius:50%;border:3px solid #fff;margin-bottom:5px;}
+#profileArea h4, #profileArea p {color:#fff; margin:5px 0;}
+.videos-panel {
+  position:fixed; right:20px; top:80px;
+  width:360px; max-height:70vh; overflow:auto;
+  padding:14px; border-radius:16px;
+  backdrop-filter:blur(6px);
+  background:rgba(255,255,255,0.1);
+  box-shadow:0 8px 20px rgba(0,0,0,0.3);
+  z-index:120;
+}
+.video-wrapper {
+  background:rgba(186,85,211,0.25);
+  border:2px solid #d8b4ff;
+  border-radius:12px;
+  padding:8px;
+  margin-bottom:12px;
+  transition:transform 0.3s ease, background 0.3s ease;
+}
+.video-wrapper:hover {transform:scale(1.03); background:rgba(186,85,211,0.45);}
+iframe {width:100%; border-radius:12px;}
+.btn-register {
+  background:var(--accent);
+  color:#000;
+  padding:12px 24px;
+  border-radius:999px;
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  cursor:pointer;
+  z-index:150;
+  font-weight:bold;
+  font-size:16px;
+  box-shadow:0 0 15px rgba(255,255,255,0.3);
+}
+.btn-register:hover {background:#fff; transform:translateX(-50%) scale(1.05);}
+#registerPage {
+  display:none; position:fixed; top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(46,0,79,0.95);
+  display:flex; justify-content:center; align-items:center;
+  z-index:200;
+}
+#registerForm {
+  background:#4b007c; color:#fff;
+  padding:30px; border-radius:16px;
+  width:320px; text-align:center;
+  box-shadow:0 8px 20px rgba(0,0,0,0.5);
+}
+#registerForm h2 {margin-bottom:20px; color:#ffdd57;}
+#registerForm input {
+  width:100%; padding:10px; margin:8px 0;
+  border-radius:8px; border:1px solid #ccc;
+  font-size:16px; color:#000; background:#fff;
+}
+#registerForm button {
+  padding:10px 20px; border:none; border-radius:12px;
+  background:var(--primary); color:#fff;
+  cursor:pointer; font-weight:bold; margin-top:10px;
+}
+#registerForm button:hover {background:#a855f7;}
+#updatesModal {
+  display:none; position:fixed; top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.8);
+  display:flex; justify-content:center; align-items:center;
+  z-index:300;
+}
+#updatesContent {
+  background:#4b007c; padding:30px; border-radius:16px;
+  text-align:center; color:#fff; width:320px;
+  box-shadow:0 0 25px rgba(255,255,255,0.2);
+}
+#updatesContent h3 {color:#ffdd57; margin-bottom:10px;}
+#updatesContent p {font-size:16px; line-height:1.5;}
+#updatesContent button {
+  margin-top:10px; background:var(--accent);
+  color:#000; border:none; border-radius:10px;
+  padding:6px 12px; cursor:pointer;
+}
+#updatesContent button:hover {background:#fff;}
+#commentsSection {
+  position:fixed; bottom:0; left:0; right:0;
+  background:rgba(0,0,0,0.3);
+  padding:15px 20px;
+  text-align:center;
+  backdrop-filter:blur(10px);
+  box-shadow:0 -5px 20px rgba(0,0,0,0.3);
+}
+#commentInput {width:70%; padding:10px; border-radius:12px; border:none; font-size:16px; outline:none;}
+#sendComment {background:var(--accent); color:#000; border:none; border-radius:12px; padding:10px 20px; margin-right:8px; cursor:pointer; font-weight:bold; transition:0.3s;}
+#sendComment:hover {background:#fff;}
+#commentsDisplay {
+  max-height:120px; overflow-y:auto; margin-top:10px;
+  padding:8px; border-radius:10px;
+  background:rgba(255,255,255,0.1); font-size:14px; text-align:right;
+}
+.comment-item {background:rgba(186,85,211,0.3); border-radius:8px; padding:6px 10px; margin-bottom:6px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">📘 مكتبة Earth التعليميّة</div>
+  <nav>
+    <div class="nav-link" onclick="goHome()">الصفحة الرئيسة</div>
+    <div class="nav-link" onclick="showUpdates()">المستجدات</div>
+  </nav>
+</header>
+
+<div id="profileArea"></div>
+<button class="btn-register" id="openRegister">تسجيل</button>
+
+<!-- صفحة التسجيل -->
+<div id="registerPage">
+  <div id="registerForm">
+    <h2>تسجيل حسابك</h2>
+    <input type="text" id="fullName" placeholder="الاسم والنسب">
+    <input type="text" id="level" placeholder="المستوى الدراسي">
+    <button id="submitRegister">تسجيل</button>
+  </div>
+</div>
+
+<!-- المستجدات -->
+<div id="updatesModal">
+  <div id="updatesContent">
+    <h3>📢 إعلان هام</h3>
+    <p>سيتم برمجة فيديوهات إن شاء الله يوم الخميس<br>
+    <strong>تاريخ: 30/10/2025</strong></p>
+    <button onclick="closeUpdates()">إغلاق</button>
+  </div>
+</div>
+
+<!-- مساحة الفيديوهات -->
+<aside class="videos-panel">
+  <h4>🎥 صف الفيديوهات</h4>
+  <div id="viewOnlyArea" class="secret-area" style="display:block;">
+    <div id="viewVideos">
+      <!-- فيديو Vimeo الجديد -->
+      <div class="video-wrapper">
+        <iframe src="https://player.vimeo.com/video/1132261152" 
+                frameborder="0" 
+                allow="autoplay; fullscreen; picture-in-picture" 
+                allowfullscreen 
+                style="width:100%; height:200px;">
+        </iframe>
+      </div>
+      <!-- يمكنك إضافة فيديوهات أخرى بنفس الطريقة -->
+    </div>
+  </div>
+</aside>
+
+<!-- التعليقات -->
+<div id="commentsSection">
+  <input type="text" id="commentInput" placeholder="اكتب تعليقك هنا...">
+  <button id="sendComment">إرسال</button>
+  <div id="commentsDisplay"></div>
+</div>
+
+<script>
+// التسجيل والبروفايل
+document.getElementById('openRegister').addEventListener('click',()=>{document.getElementById('registerPage').style.display='flex';});
+document.getElementById('submitRegister').addEventListener('click',()=>{
+  const name=document.getElementById('fullName').value.trim();
+  const level=document.getElementById('level').value.trim();
+  if(!name||!level){alert('المرجو ملء جميع الحقول'); return;}
+  const userCode='USR'+Math.floor(Math.random()*9000+1000);
+  const canvas=document.createElement('canvas'); canvas.width=100; canvas.height=100;
+  const ctx=canvas.getContext('2d'); ctx.fillStyle='#d8b4ff'; ctx.fillRect(0,0,100,100);
+  ctx.fillStyle='#000'; ctx.font='50px Cairo'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(name.charAt(0).toUpperCase(),50,50);
+  const avatar=canvas.toDataURL();
+  localStorage.setItem('userProfile',JSON.stringify({name,level,code:userCode,avatar}));
+  displayProfile(); document.getElementById('registerPage').style.display='none';
+  alert('تم تسجيلك! كودك الخاص: '+userCode);
+});
+function displayProfile(){
+  const data=localStorage.getItem('userProfile'); if(!data) return;
+  const profile=JSON.parse(data);
+  document.getElementById('profileArea').innerHTML=`<img src="${profile.avatar}" alt="avatar"><h4>${profile.name}</h4><p>${profile.level}</p>`;
+}
+window.addEventListener('load',()=>{displayProfile();});
+
+// المستجدات
+function showUpdates(){document.getElementById('updatesModal').style.display='flex';}
+function closeUpdates(){document.getElementById('updatesModal').style.display='none';}
+
+// التعليقات
+const commentInput=document.getElementById('commentInput');
+const sendComment=document.getElementById('sendComment');
+const commentsDisplay=document.getElementById('commentsDisplay');
+function loadComments(){
+  const comments=JSON.parse(localStorage.getItem('earthComments')||'[]');
+  commentsDisplay.innerHTML='';
+  comments.forEach(c=>{
+    const div=document.createElement('div'); div.className='comment-item'; div.textContent=c;
+    commentsDisplay.appendChild(div);
+  });
+}
+sendComment.addEventListener('click',()=>{
+  const text=commentInput.value.trim();
+  if(!text) return;
+  const comments=JSON.parse(localStorage.getItem('earthComments')||'[]');
+  comments.push(text);
+  localStorage.setItem('earthComments',JSON.stringify(comments));
+  commentInput.value=''; loadComments();
+});
+window.addEventListener('load',loadComments);
+
+function goHome(){alert('الصفحة الرئيسة');}
+</script>
+
+</body>
+</html>
