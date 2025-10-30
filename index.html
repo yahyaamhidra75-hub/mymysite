@@ -20,8 +20,6 @@ body {
   min-height:100vh;
   overflow-x:hidden;
 }
-
-/* الشريط العلوي */
 header {
   position:fixed;
   top:0; left:0; right:0;
@@ -44,8 +42,6 @@ header {
   transition:0.3s;
 }
 .nav-link:hover {background:var(--accent); color:#000;}
-
-/* بروفايل */
 #profileArea {
   position:fixed; left:20px; top:80px;
   width:220px; text-align:center;
@@ -55,11 +51,9 @@ header {
   border:3px solid #fff;margin-bottom:5px;
 }
 #profileArea h4, #profileArea p {color:#fff; margin:5px 0;}
-
-/* الفيديوهات */
 .videos-panel {
   position:fixed; right:20px; top:80px;
-  width:350px; max-height:65vh; overflow:auto;
+  width:360px; max-height:70vh; overflow:auto;
   padding:14px; border-radius:16px;
   backdrop-filter:blur(6px);
   background:rgba(255,255,255,0.1);
@@ -75,17 +69,7 @@ header {
   transition:transform 0.3s ease, background 0.3s ease;
 }
 .video-wrapper:hover {transform:scale(1.03); background:rgba(186,85,211,0.45);}
-video {width:100%; border:2px solid #d8b4ff; border-radius:12px;}
-.delete-btn {
-  display:block; margin:6px auto;
-  background:var(--primary); color:#fff;
-  border:none; border-radius:10px;
-  padding:6px 14px; cursor:pointer;
-  transition:background 0.3s;
-}
-.delete-btn:hover {background:#b57bff; color:#000;}
-
-/* زر التسجيل */
+iframe {width:100%; border-radius:12px;}
 .btn-register {
   background:var(--accent);
   color:#000;
@@ -102,8 +86,6 @@ video {width:100%; border:2px solid #d8b4ff; border-radius:12px;}
   box-shadow:0 0 15px rgba(255,255,255,0.3);
 }
 .btn-register:hover {background:#fff; transform:translateX(-50%) scale(1.05);}
-
-/* صفحة التسجيل */
 #registerPage {
   display:none; position:fixed; top:0; left:0;
   width:100%; height:100%;
@@ -129,11 +111,6 @@ video {width:100%; border:2px solid #d8b4ff; border-radius:12px;}
   cursor:pointer; font-weight:bold; margin-top:10px;
 }
 #registerForm button:hover {background:#a855f7;}
-
-.secret-area{display:none;margin-top:12px;}
-#uploadedVideos, #viewVideos{margin-top:10px;}
-
-/* المستجدات */
 #updatesModal {
   display:none; position:fixed; top:0; left:0;
   width:100%; height:100%;
@@ -154,8 +131,6 @@ video {width:100%; border:2px solid #d8b4ff; border-radius:12px;}
   padding:6px 12px; cursor:pointer;
 }
 #updatesContent button:hover {background:#fff;}
-
-/* التعليقات */
 #commentsSection {
   position:fixed;
   bottom:0; left:0; right:0;
@@ -239,19 +214,26 @@ video {width:100%; border:2px solid #d8b4ff; border-radius:12px;}
 <!-- مساحة الفيديوهات -->
 <aside class="videos-panel">
   <h4>🎥 مساحة الفيديوهات</h4>
-  <label>أدخل الكود الخاص:</label>
-  <input id="secretCode" placeholder="الكود">
-  <button onclick="unlockSecret()">افتح</button>
 
-  <div id="secretArea" class="secret-area">
-    <p>يمكنك رفع الفيديوهات:</p>
-    <input type="file" id="videoUpload" accept="video/*" multiple>
-    <div id="uploadedVideos"></div>
-  </div>
-
-  <div id="viewOnlyArea" class="secret-area">
-    <p>عرض الفيديوهات فقط:</p>
-    <div id="viewVideos"></div>
+  <div id="viewOnlyArea" class="secret-area" style="display:block;">
+    <p>صف الفيديوهات:</p>
+    <div id="viewVideos">
+      <!-- فيديو Vimeo 1 -->
+      <div class="video-wrapper">
+        <iframe src="https://player.vimeo.com/video/1132237876" 
+                frameborder="0" 
+                allow="autoplay; fullscreen; picture-in-picture" 
+                allowfullscreen 
+                style="width:100%; height:200px;">
+        </iframe>
+      </div>
+      <!-- يمكنك إضافة فيديوهات أخرى بنفس الطريقة -->
+      <!-- مثال: 
+      <div class="video-wrapper">
+        <iframe src="https://player.vimeo.com/video/XXXXXXXXX" frameborder="0" allowfullscreen style="width:100%; height:200px;"></iframe>
+      </div>
+      -->
+    </div>
   </div>
 </aside>
 
@@ -263,64 +245,17 @@ video {width:100%; border:2px solid #d8b4ff; border-radius:12px;}
 </div>
 
 <script>
-const SECRET='123', NO_DELETE_CODE='yahya@123';
-const uploadedVideosContainer=document.getElementById('uploadedVideos');
-const videoUploadInput=document.getElementById('videoUpload');
-let db, currentCode=null;
-
-// IndexedDB
-const request=indexedDB.open('VideoDB',1);
-request.onupgradeneeded=e=>{db=e.target.result; db.createObjectStore('videos',{keyPath:'id',autoIncrement:true});};
-request.onsuccess=e=>{db=e.target.result; loadVideos();};
-
-// فيديو
-function createVideoWrapper(record,allowDelete=true,allowDownload=true){
-  const wrapper=document.createElement('div'); wrapper.className='video-wrapper';
-  const vid=document.createElement('video'); vid.controls=true;
-  const url=URL.createObjectURL(record.file); vid.src=url;
-  if(!allowDownload){vid.controlsList="nodownload"; vid.addEventListener('contextmenu',e=>e.preventDefault());}
-  wrapper.appendChild(vid);
-  if(allowDelete){
-    const delBtn=document.createElement('button'); delBtn.textContent='حذف الفيديو'; delBtn.className='delete-btn';
-    delBtn.onclick=()=>{deleteVideoById(record.id);};
-    wrapper.appendChild(delBtn);
-  }
-  return wrapper;
-}
-function deleteVideoById(id){const t=db.transaction(['videos'],'readwrite'); t.objectStore('videos').delete(id); t.oncomplete=()=>{loadVideos();};}
-function loadVideos(){const t=db.transaction(['videos'],'readonly');const s=t.objectStore('videos');s.getAll().onsuccess=e=>{uploadedVideosContainer.innerHTML='';e.target.result.forEach(r=>uploadedVideosContainer.appendChild(createVideoWrapper(r,true,true)));};}
-function loadVideosNoDelete(){const t=db.transaction(['videos'],'readonly');const s=t.objectStore('videos');s.getAll().onsuccess=e=>{uploadedVideosContainer.innerHTML='';e.target.result.forEach(r=>uploadedVideosContainer.appendChild(createVideoWrapper(r,false,true)));};}
-function loadVideosToViewOnly(){const t=db.transaction(['videos'],'readonly');const s=t.objectStore('videos');const c=document.getElementById('viewVideos');s.getAll().onsuccess=e=>{c.innerHTML='';e.target.result.forEach(r=>c.appendChild(createVideoWrapper(r,false,false)));};}
-videoUploadInput.addEventListener('change',e=>{
-  if(currentCode && currentCode.startsWith('USR')){alert('رفع الفيديوهات ممنوع مع هذا الكود'); videoUploadInput.value=''; return;}
-  Array.from(e.target.files).forEach(file=>{
-    const t=db.transaction(['videos'],'readwrite'); t.objectStore('videos').add({file:file});
-    t.oncomplete=()=>{if(currentCode===SECRET)loadVideos(); else if(currentCode===NO_DELETE_CODE)loadVideosNoDelete();};
-  });
-});
-function unlockSecret(){
-  const inputCode=document.getElementById('secretCode').value.trim();
-  const secretArea=document.getElementById('secretArea');
-  const viewOnlyArea=document.getElementById('viewOnlyArea');
-  const profile=JSON.parse(localStorage.getItem('userProfile')||'{}');
-  currentCode=inputCode;
-  if(inputCode===SECRET){secretArea.style.display='block'; viewOnlyArea.style.display='none'; loadVideos();}
-  else if(inputCode===NO_DELETE_CODE){secretArea.style.display='block'; viewOnlyArea.style.display='none'; loadVideosNoDelete();}
-  else if(inputCode===profile.code){secretArea.style.display='none'; viewOnlyArea.style.display='block'; loadVideosToViewOnly();}
-  else{secretArea.style.display='none'; viewOnlyArea.style.display='none'; currentCode=null; alert('كود خاطئ');}
-}
-
-// التسجيل
+// التسجيل والبروفايل
 document.getElementById('openRegister').addEventListener('click',()=>{document.getElementById('registerPage').style.display='flex';});
 document.getElementById('submitRegister').addEventListener('click',()=>{
   const name=document.getElementById('fullName').value.trim();
   const level=document.getElementById('level').value.trim();
   if(!name||!level){alert('المرجو ملء جميع الحقول'); return;}
   const userCode='USR'+Math.floor(Math.random()*9000+1000);
-  const firstChar=name.charAt(0).toUpperCase();
   const canvas=document.createElement('canvas'); canvas.width=100; canvas.height=100;
   const ctx=canvas.getContext('2d'); ctx.fillStyle='#d8b4ff'; ctx.fillRect(0,0,100,100);
-  ctx.fillStyle='#000'; ctx.font='50px Cairo'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(firstChar,50,50);
+  ctx.fillStyle='#000'; ctx.font='50px Cairo'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(name.charAt(0).toUpperCase(),50,50);
   const avatar=canvas.toDataURL();
   localStorage.setItem('userProfile',JSON.stringify({name,level,code:userCode,avatar}));
   displayProfile(); document.getElementById('registerPage').style.display='none';
@@ -329,7 +264,7 @@ document.getElementById('submitRegister').addEventListener('click',()=>{
 function displayProfile(){
   const data=localStorage.getItem('userProfile'); if(!data) return;
   const profile=JSON.parse(data);
-  profileArea.innerHTML=`<img src="${profile.avatar}" alt="avatar"><h4>${profile.name}</h4><p>${profile.level}</p>`;
+  document.getElementById('profileArea').innerHTML=`<img src="${profile.avatar}" alt="avatar"><h4>${profile.name}</h4><p>${profile.level}</p>`;
 }
 window.addEventListener('load',()=>{displayProfile();});
 
@@ -341,14 +276,11 @@ function closeUpdates(){document.getElementById('updatesModal').style.display='n
 const commentInput=document.getElementById('commentInput');
 const sendComment=document.getElementById('sendComment');
 const commentsDisplay=document.getElementById('commentsDisplay');
-
 function loadComments(){
   const comments=JSON.parse(localStorage.getItem('earthComments')||'[]');
   commentsDisplay.innerHTML='';
   comments.forEach(c=>{
-    const div=document.createElement('div');
-    div.className='comment-item';
-    div.textContent=c;
+    const div=document.createElement('div'); div.className='comment-item'; div.textContent=c;
     commentsDisplay.appendChild(div);
   });
 }
@@ -358,12 +290,12 @@ sendComment.addEventListener('click',()=>{
   const comments=JSON.parse(localStorage.getItem('earthComments')||'[]');
   comments.push(text);
   localStorage.setItem('earthComments',JSON.stringify(comments));
-  commentInput.value='';
-  loadComments();
+  commentInput.value=''; loadComments();
 });
 window.addEventListener('load',loadComments);
 
 function goHome(){alert('الصفحة الرئيسة');}
 </script>
+
 </body>
 </html>
