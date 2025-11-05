@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎓 مؤسسة Earth التعليمية | بإبداع المطور يحيى</title>
+
+  <!-- خطوط Google -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #1e3c72;
+      --secondary: #2a5298;
+      --accent: #f8b500;
+      --text-dark: #222;
+      --text-light: #fff;
+      --bg: #f9fafc;
+      --card-bg: #fff;
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: "Cairo", sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text-dark);
+      direction: rtl;
+    }
+
+    /* رأس الموقع */
+    header {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 15px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      box-shadow: var(--shadow);
+    }
+
+    header h1 {
+      font-size: 1.8em;
+      margin: 0;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+      transform: scale(1.1);
+    }
+
+    /* قسم الدخول */
+    .login-container {
+      background: white;
+      box-shadow: var(--shadow);
+      border-radius: 15px;
+      padding: 40px;
+      max-width: 400px;
+      margin: 100px auto;
+      text-align: center;
+    }
+
+    .login-container h2 {
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+
+    .login-container input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 1em;
+    }
+
+    .login-btn {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 12px 40px;
+      border-radius: 25px;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+
+    .login-btn:hover {
+      background: var(--secondary);
+      transform: scale(1.05);
+    }
+
+    /* محتوى الموقع */
+    main {
+      display: none;
+      padding: 50px 10%;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #f5f7fa, #e2e6f3);
+      border-radius: 15px;
+      text-align: center;
+      padding: 80px 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero h2 {
+      color: var(--primary);
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: #555;
+      font-size: 1.2em;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .resources {
+      margin-top: 70px;
+      text-align: center;
+    }
+
+    .resources h2 {
+      color: var(--primary);
+      font-size: 2em;
+    }
+
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .video-card {
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+      border-radius: 15px;
+      overflow: hidden;
+      transition: 0.3s;
+    }
+
+    .video-card:hover {
+      transform: scale(1.03);
+    }
+
+    .video-card iframe {
+      width: 100%;
+      height: 220px;
+    }
+
+    .video-card h4 {
+      margin: 15px;
+      color: var(--primary);
+    }
+
+    /* قسم PDF */
+    .pdf-container {
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+      border-radius: 15px;
+      margin: 40px auto;
+      padding: 20px;
+      max-width: 900px;
+    }
+
+    .pdf-container iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      border-radius: 10px;
+    }
+
+    .download-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 25px;
+      background: var(--primary);
+      color: white;
+      border-radius: 25px;
+      text-decoration: none;
+      transition: 0.3s;
+      font-weight: 600;
+    }
+
+    .download-btn:hover {
+      background: var(--secondary);
+    }
+
+    /* قسم واتساب */
+    .whatsapp-section {
+      text-align: center;
+      padding: 60px 20px;
+      background: #f0f8f5;
+      margin-top: 60px;
+      border-radius: 15px;
+    }
+
+    .whatsapp-section h2 {
+      color: #25D366;
+      font-size: 2em;
+    }
+
+    .whatsapp-btn {
+      display: inline-flex;
+      align-items: center;
+      background: #25D366;
+      color: white;
+      font-size: 1.2em;
+      padding: 15px 35px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 15px;
+      box-shadow: 0 10px 20px rgba(37, 211, 102, 0.4);
+      transition: 0.3s;
+    }
+
+    .whatsapp-btn:hover {
+      background: #1ebe5b;
+      transform: scale(1.05);
+    }
+
+    .whatsapp-btn img {
+      width: 30px;
+      margin-left: 10px;
+    }
+
+    /* تذييل */
+    footer {
+      background: var(--primary);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 50px;
+      font-weight: 600;
+    }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🎓 مؤسسة Earth التعليمية</h1>
+    <nav>
+      <a href="#">الرئيسية</a>
+      <a href="#resources">الدروس</a>
+      <a href="#pdf">الملفات</a>
+      <a href="#whatsapp">الدعم</a>
+    </nav>
+  </header>
+
+  <!-- تسجيل الدخول -->
+  <div class="login-container" id="loginBox">
+    <h2>🔐 تسجيل الدخول</h2>
+    <input type="text" id="username" placeholder="اسم المستخدم">
+    <input type="password" id="accessCode" placeholder="رمز الدخول">
+    <button class="login-btn" onclick="login()">دخول</button>
+    <p style="color:#777;font-size:0.9em;margin-top:10px;">
+      يجب أن تكون عضوًا في مجموعة الدعم على واتساب للحصول على رمز الدخول 🎯
+    </p>
+  </div>
+
+  <!-- المحتوى بعد الدخول -->
+  <main id="siteContent">
+    <section class="hero">
+      <h2>أهلاً بك في أكاديمية Earth التعليمية</h2>
+      <p>تعلم بذكاء مع كورسات مصممة خصيصًا لطلاب الصف الثاني الإعدادي بإشراف نخبة من الأساتذة.</p>
+    </section>
+
+    <section class="resources" id="resources">
+      <h2>🎥 كورسات الصف الثاني الإعدادي</h2>
+      <div class="videos-grid">
+        <div class="video-card">
+          <iframe src="https://player.vimeo.com/video/1132735282" allowfullscreen></iframe>
+          <h4>📘 فيزياء وكيمياء - الدرس الأول</h4>
+        </div>
+        <div class="video-card">
+          <iframe src="https://player.vimeo.com/video/1132261152" allowfullscreen></iframe>
+          <h4>🧮 رياضيات - الجبر الثاني</h4>
+        </div>
+      </div>
+    </section>
+
+    <section class="pdf-container" id="pdf">
+      <h2>📄 ملفات المراجعة</h2>
+      <iframe src="https://drive.google.com/file/d/1lLmT4kv6t4pLJsDrEbPRlCKgPHv7VYeU/preview"></iframe>
+      <a href="https://drive.google.com/file/d/1lLmT4kv6t4pLJsDrEbPRlCKgPHv7VYeU/view?usp=drive_link" target="_blank" class="download-btn">
+        ⬇️ تحميل الملف من Google Drive
+      </a>
+    </section>
+
+    <section class="whatsapp-section" id="whatsapp">
+      <h2>💚 انضم إلى مجتمع الدعم</h2>
+      <p>تواصل مع الأساتذة والمطور يحيى مباشرة عبر مجموعة الدعم الرسمية.</p>
+      <a href="https://chat.whatsapp.com/JBq3R5prKLw8kbf9lua7Kj" target="_blank" class="whatsapp-btn">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"> انضم الآن
+      </a>
+    </section>
+
+    <footer>
+      © 2025 مؤسسة Earth التعليمية — بإبداع 💡 المطور يحيى
+    </footer>
+  </main>
+
+  <script>
+    function login() {
+      const user = document.getElementById('username').value;
+      const code = document.getElementById('accessCode').value;
+
+      if (user.trim() === "" || code.trim() === "") {
+        alert("⚠️ يرجى إدخال جميع الحقول!");
+        return;
+      }
+
+      // رمز سري يمكن تغييره حسب الطلب
+      if (code === "EARTH2025") {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("siteContent").style.display = "block";
+        window.scrollTo(0, 0);
+      } else {
+        alert("❌ رمز الدخول غير صحيح! اطلب الإذن من المطور يحيى عبر مجموعة واتساب.");
+      }
+    }
+  </script>
+
+</body>
+</html>
